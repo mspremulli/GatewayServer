@@ -12,15 +12,14 @@ import java.util.UUID;
 @RestController
 public class GatewayApplication {
 
-	public static void main(String[] args) {
-
-		SpringApplication.run(GatewayApplication.class, args);
-	}
-
-	@GetMapping("/hello")
-	public String hello(@RequestParam(value = "name", defaultValue = "World") String name) {
-		return String.format("Hello %s!", name);
-	}
+//	public static void main(String[] args) {
+//		SpringApplication.run(GatewayApplication.class, args);
+//	}
+//
+//	@GetMapping("/hello")
+//	public String hello(@RequestParam(value = "name", defaultValue = "World") String name) {
+//		return String.format("Hello %s!", name);
+//	}
 
 	@Autowired
 	public GatewayApplication() {
@@ -28,22 +27,24 @@ public class GatewayApplication {
 	}
 
 	@GetMapping(path = "{id}")
-	public User getUserById(@PathVariable("id") int id){
+	public User getUserById(@PathVariable("id") UUID id){
 		return null;
 	}
 
 	@PostMapping
-	public User createUser(){
-		return new User();
+	public User createUser(String name, String password, UUID id){
+		return new User(name, password, id);
 	}
 
 	@DeleteMapping
-	public User deleteUserById(int id){
+	public User deleteUserById(UUID id){
+		//todo find user by id and delete
 		return null;
 	}
 
 	@PutMapping
-	public User updateUserById(int id, User newUser){
+	public User updateUserById(UUID id, User newUser){
+		//todo remove old user
 		return newUser;
 	}
 
