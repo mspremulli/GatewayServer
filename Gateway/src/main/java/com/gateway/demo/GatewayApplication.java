@@ -12,6 +12,7 @@ import java.util.UUID;
 @SpringBootApplication
 @RestController
 public class GatewayApplication {
+	//todo replace user list with users from database
 	private final ArrayList<User> users = new ArrayList<>();
 
 
@@ -20,26 +21,38 @@ public class GatewayApplication {
 
 	}
 
-	@GetMapping(path = "{id}")
-	public User getUserById(@PathVariable("id") UUID id){
-		return users.stream().filter(
-						user -> user.getUserID().equals(id)
-		).findFirst().orElse(null);
+	public static void main(String[] args) {
+		SpringApplication.run(GatewayApplication.class, args);
 	}
 
 	@PostMapping
-	public User createUser(String name, String password, UUID id){
-		return new User(name, password, id);
+	public User createUser(@RequestBody String name, String password){
+		User user = new User(name, password);
+		System.out.println("new user: " + name + " " + password + " ");
+
+		return user;
+	}
+
+	@GetMapping(path = "{id}")
+	public User getUserById(@PathVariable("id") int id){
+		System.out.println("in get" + id);
+		User thisUser = users.stream().filter(
+						user -> user.getId() == id
+		).findFirst().orElse(null);
+
+		System.out.println(thisUser);
+
+		return thisUser;
 	}
 
 	@DeleteMapping
-	public User deleteUserById(UUID id){
+	public User deleteUserById(int id){
 		//todo find user by id and delete
 		return null;
 	}
 
 	@PutMapping
-	public User updateUserById(UUID id, User newUser){
+	public User updateUserById(int id, User newUser){
 		//todo remove old user
 		return newUser;
 	}

@@ -5,20 +5,20 @@ import java.util.UUID;
 public class User {
   String userName;
   String password;//todo hash it with jwt and bcrypt
-  UUID userID;
+  int id;
 
-  public User(String userName, String password, UUID userID) {
+  public User(String userName, String password) {
     this.userName = userName;
     this.password = password;
-    this.userID = userID;
+    id=0;
   }
 
   public String getUserName() {
     return userName;
   }
 
-  public UUID getUserID() {
-    return userID;
+  public int getId() {
+    return id;
   }
 }
 
