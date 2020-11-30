@@ -1,4 +1,4 @@
-package com.gateway.demo;
+package user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -6,29 +6,27 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 @SpringBootApplication
 @RestController
-public class GatewayApplication {
+public class UserAuthentication {
 	//todo replace user list with users from database
 	private final ArrayList<User> users = new ArrayList<>();
 
 
 	@Autowired
-	public GatewayApplication() {
+	public UserAuthentication() {
 
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(GatewayApplication.class, args);
+		SpringApplication.run(UserAuthentication.class, args);
 	}
 
 	@PostMapping
-	public User createUser(@RequestBody String name, String password){
-		User user = new User(name, password);
-		System.out.println("new user: " + name + " " + password + " ");
+	public User createUser(@RequestBody String name, String password, int id){
+		User user = new User(name, password, id);
+		System.out.println("new user: " + name + " " + password + " "+ id);
 
 		return user;
 	}
