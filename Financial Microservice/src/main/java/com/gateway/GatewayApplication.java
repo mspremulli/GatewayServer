@@ -2,9 +2,11 @@ package com.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -13,10 +15,9 @@ import java.util.HashMap;
 //import org.json.*;
 
 @SpringBootApplication
+@RestController
 public class GatewayApplication {
   private static HashMap<String, String> servers;
-  private HttpClient serverClient = HttpClient.newBuilder().build();
-  private HttpRequest serverRequest;
 
   public static void main(String[] args) {
     SpringApplication.run(GatewayApplication.class, args);
@@ -31,14 +32,20 @@ public class GatewayApplication {
     servers.put("TEST", "https://jsonmock.hackerrank.com/api/movies/search/?Title=spiderman");
   }
 
-  public String switchRoute(@RequestBody String request, @RequestParam String location){
+  @GetMapping("/{location}")
+  public String switchRoute(@PathVariable String location) throws IOException, InterruptedException {
     String url = servers.get(location);
-    serverRequest = HttpRequest.newBuilder().uri(URI.create(url)).build();
-    serverClient.sendAsync(serverRequest, HttpResponse.BodyHandlers.ofString());
 
-    return serverRequest.toString();
+    HttpClient serverClient = HttpClient.newHttpClient();
+    HttpRequest serverRequest = HttpRequest.newBuilder()
+            .GET()
+            .header("Content-Type", "application/json")
+            .uri(URI.create(url))
+            .build();
+    HttpResponse<String> response = serverClient.send(serverRequest, HttpResponse.BodyHandlers.ofString());
+
+    return response.body();
   }
-
 }
 
 
