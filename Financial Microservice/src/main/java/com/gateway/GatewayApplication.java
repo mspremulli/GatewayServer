@@ -9,7 +9,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.file.Paths;
 import java.util.HashMap;
 
 @SpringBootApplication
@@ -24,15 +23,18 @@ public class GatewayApplication {
 
   public static void initializeServers(){
     servers = new HashMap<>();
-    servers.put("LOGIN", "http://localhost:8000/");
-    servers.put("SQL", "http://localhost:7000/");
-    servers.put("ML", "http://localhost:6000/");
+    servers.put("LOGIN", "http://localhost:8001/");
+    servers.put("SQL", "http://localhost:8002/");
+    servers.put("ML", "http://localhost:8003/");
     servers.put("TEST", "https://jsonmock.hackerrank.com/api/movies/search/?Title=");
   }
 
   @GetMapping("/{location}")
-  public Object getRoute(@RequestBody String request, @PathVariable String location) throws IOException, InterruptedException {
-    String url = servers.get(location) + request;
+  public Object getRoute(@RequestBody(required = false) String request, @PathVariable String location) throws IOException, InterruptedException {
+    if(!servers.containsKey(location)) {
+      //todo: throw error?
+    }
+    String url = servers.get(location);
 
     HttpClient serverClient = HttpClient.newHttpClient();
     HttpRequest serverRequest = HttpRequest.newBuilder()
@@ -47,9 +49,8 @@ public class GatewayApplication {
 
   @PostMapping("/{location}")
   public Object postRoute(@RequestBody String request, @PathVariable String location) throws IOException, InterruptedException {
-    String url = servers.get(location) + request;
-    HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofFile(Paths.get(request));
-
+    String url = servers.get(location);
+    HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(request);
 
     HttpClient serverClient = HttpClient.newHttpClient();
     HttpRequest serverRequest = HttpRequest.newBuilder()
@@ -64,8 +65,8 @@ public class GatewayApplication {
 
   @PutMapping("/{location}")
   public Object putRoute(@RequestBody String request, @PathVariable String location) throws IOException, InterruptedException {
-    String url = servers.get(location) + request;
-    HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofFile(Paths.get(request));
+    String url = servers.get(location);
+    HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(request);
 
     HttpClient serverClient = HttpClient.newHttpClient();
     HttpRequest serverRequest = HttpRequest.newBuilder()
@@ -79,8 +80,8 @@ public class GatewayApplication {
   }
 
   @DeleteMapping("/{location}")
-  public Object deleteRoute(@RequestBody String request, @PathVariable String location) throws IOException, InterruptedException {
-    String url = servers.get(location) + request;
+  public Object deleteRoute(@RequestBody(required = false) String request, @PathVariable String location) throws IOException, InterruptedException {
+    String url = servers.get(location);
 
     HttpClient serverClient = HttpClient.newHttpClient();
     HttpRequest serverRequest = HttpRequest.newBuilder()
