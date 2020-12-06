@@ -22,6 +22,7 @@ public class GatewayApplication {
   }
 
   public static void initializeServers(){
+    //TODO: move to applications/properties
     servers = new HashMap<>();
     servers.put("LOGIN", "http://localhost:8001/");
     servers.put("SQL", "http://localhost:8002/");
@@ -29,7 +30,9 @@ public class GatewayApplication {
   }
 
   @GetMapping("/{location}")
-  public Object getRoute(@RequestBody(required = false) String request, @PathVariable String location) throws IOException, InterruptedException {
+  public Object getRoute(@RequestBody(required = false) String request,
+                         @RequestHeader(value = "header", defaultValue = "") String header,
+                         @PathVariable String location) throws IOException, InterruptedException {
     if(!servers.containsKey(location)) return null;
     String url = servers.get(location);
 
@@ -37,9 +40,11 @@ public class GatewayApplication {
     HttpRequest serverRequest = HttpRequest.newBuilder()
             .GET()
             .header("Content-Type", "application/json")
+            .header("id", header)
             .uri(URI.create(url))
             .build();
     HttpResponse<String> response = serverClient.send(serverRequest, HttpResponse.BodyHandlers.ofString());
+//    System.out.println(serverRequest.headers());
 
     return response.body();
   }
