@@ -26,14 +26,11 @@ public class GatewayApplication {
     servers.put("LOGIN", "http://localhost:8001/");
     servers.put("SQL", "http://localhost:8002/");
     servers.put("ML", "http://localhost:8003/");
-    servers.put("TEST", "https://jsonmock.hackerrank.com/api/movies/search/?Title=");
   }
 
   @GetMapping("/{location}")
   public Object getRoute(@RequestBody(required = false) String request, @PathVariable String location) throws IOException, InterruptedException {
-    if(!servers.containsKey(location)) {
-      //todo: throw error?
-    }
+    if(!servers.containsKey(location)) return null;
     String url = servers.get(location);
 
     HttpClient serverClient = HttpClient.newHttpClient();
@@ -49,6 +46,7 @@ public class GatewayApplication {
 
   @PostMapping("/{location}")
   public Object postRoute(@RequestBody String request, @PathVariable String location) throws IOException, InterruptedException {
+    if(!servers.containsKey(location)) return null;
     String url = servers.get(location);
     HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(request);
 
@@ -65,6 +63,7 @@ public class GatewayApplication {
 
   @PutMapping("/{location}")
   public Object putRoute(@RequestBody String request, @PathVariable String location) throws IOException, InterruptedException {
+    if(!servers.containsKey(location)) return null;
     String url = servers.get(location);
     HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(request);
 
@@ -81,6 +80,7 @@ public class GatewayApplication {
 
   @DeleteMapping("/{location}")
   public Object deleteRoute(@RequestBody(required = false) String request, @PathVariable String location) throws IOException, InterruptedException {
+    if(!servers.containsKey(location)) return null;
     String url = servers.get(location);
 
     HttpClient serverClient = HttpClient.newHttpClient();
