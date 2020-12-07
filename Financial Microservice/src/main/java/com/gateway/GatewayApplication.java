@@ -31,7 +31,7 @@ public class GatewayApplication {
 
   @GetMapping("/{location}")
   public Object getRoute(@RequestBody(required = false) String request,
-                         @RequestHeader(value = "header", defaultValue = "") String header,
+                         @RequestHeader(name = "id", defaultValue = "") String id,
                          @PathVariable String location) throws IOException, InterruptedException {
     if(!servers.containsKey(location)) return null;
     String url = servers.get(location);
@@ -40,17 +40,17 @@ public class GatewayApplication {
     HttpRequest serverRequest = HttpRequest.newBuilder()
             .GET()
             .header("Content-Type", "application/json")
-            .header("id", header)
+            .header("id", id)
             .uri(URI.create(url))
             .build();
     HttpResponse<String> response = serverClient.send(serverRequest, HttpResponse.BodyHandlers.ofString());
-//    System.out.println(serverRequest.headers());
 
     return response.body();
   }
 
   @PostMapping("/{location}")
-  public Object postRoute(@RequestBody String request, @PathVariable String location) throws IOException, InterruptedException {
+  public Object postRoute(@RequestBody String request,
+                          @PathVariable String location) throws IOException, InterruptedException {
     if(!servers.containsKey(location)) return null;
     String url = servers.get(location);
     HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(request);
@@ -67,7 +67,9 @@ public class GatewayApplication {
   }
 
   @PutMapping("/{location}")
-  public Object putRoute(@RequestBody String request, @PathVariable String location) throws IOException, InterruptedException {
+  public Object putRoute(@RequestBody String request,
+                         @RequestHeader(name = "id", defaultValue = "") String id,
+                         @PathVariable String location) throws IOException, InterruptedException {
     if(!servers.containsKey(location)) return null;
     String url = servers.get(location);
     HttpRequest.BodyPublisher body =  HttpRequest.BodyPublishers.ofString(request);
@@ -76,6 +78,7 @@ public class GatewayApplication {
     HttpRequest serverRequest = HttpRequest.newBuilder()
             .PUT(body)
             .header("Content-Type", "application/json")
+            .header("id", id)
             .uri(URI.create(url))
             .build();
     HttpResponse<String> response = serverClient.send(serverRequest, HttpResponse.BodyHandlers.ofString());
@@ -84,7 +87,9 @@ public class GatewayApplication {
   }
 
   @DeleteMapping("/{location}")
-  public Object deleteRoute(@RequestBody(required = false) String request, @PathVariable String location) throws IOException, InterruptedException {
+  public Object deleteRoute(@RequestBody(required = false) String request,
+                            @RequestHeader(name = "id", defaultValue = "") String id,
+                            @PathVariable String location) throws IOException, InterruptedException {
     if(!servers.containsKey(location)) return null;
     String url = servers.get(location);
 
@@ -92,6 +97,7 @@ public class GatewayApplication {
     HttpRequest serverRequest = HttpRequest.newBuilder()
             .DELETE()
             .header("Content-Type", "application/json")
+            .header("id", id)
             .uri(URI.create(url))
             .build();
     HttpResponse<String> response = serverClient.send(serverRequest, HttpResponse.BodyHandlers.ofString());
