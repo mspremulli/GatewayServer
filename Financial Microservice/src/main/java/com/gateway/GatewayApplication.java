@@ -30,6 +30,7 @@ public class GatewayApplication {
   }
 
   @GetMapping("/{location}")
+  @CrossOrigin(origins = "http://localhost:3000")
   public Object getRoute(@RequestBody(required = false) String request,
                          @RequestHeader(name = "id", defaultValue = "") String id,
                          @PathVariable String location) throws IOException, InterruptedException {
@@ -49,6 +50,7 @@ public class GatewayApplication {
   }
 
   @PostMapping("/{location}")
+  @CrossOrigin(origins = "http://localhost:3000")
   public Object postRoute(@RequestBody String request,
                           @PathVariable String location) throws IOException, InterruptedException {
     if(!servers.containsKey(location)) return null;
@@ -67,6 +69,7 @@ public class GatewayApplication {
   }
 
   @PutMapping("/{location}")
+  @CrossOrigin(origins = "http://localhost:3000")
   public Object putRoute(@RequestBody String request,
                          @RequestHeader(name = "id", defaultValue = "") String id,
                          @PathVariable String location) throws IOException, InterruptedException {
@@ -87,6 +90,7 @@ public class GatewayApplication {
   }
 
   @DeleteMapping("/{location}")
+  @CrossOrigin(origins = "http://localhost:3000")
   public Object deleteRoute(@RequestBody(required = false) String request,
                             @RequestHeader(name = "id", defaultValue = "") String id,
                             @PathVariable String location) throws IOException, InterruptedException {
